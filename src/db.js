@@ -33,7 +33,35 @@ sequelize.models = Object.fromEntries(capsEntries);
 const { User, Client, Budget, Article } = sequelize.models;
 
 // Aca vendrian las relaciones
-// Product.hasMany(Reviews);
+//------------------USER O:M BUDGET----------------------
+User.hasMany(Budget)
+Budget.belongsTo(User)
+
+//------------------USER O:M ARTICLE----------------------
+User.hasMany(Article)
+Article.belongsTo(User)
+
+//------------------USER O:M CLIENT----------------------
+User.hasMany(Client)
+Client.belongsTo(User)
+
+//------------------CLIENT O:M BUDGET----------------------
+Client.hasMany(Budget)
+Budget.belongsTo(Client)
+
+//------------------ARTICLE N:M BUDGET----------------------
+Budget.belongsToMany(Article, { 
+  as: 'list_budget',
+  foreignKey: 'budget_id',
+  through: 'BudgetArticles'
+});
+
+Article.belongsToMany(Budget, { 
+  as: 'list_budget',
+  foreignKey: 'article_id',
+  through: 'BudgetArticles'
+});
+
 
 module.exports = {
   ...sequelize.models, // para poder importar los modelos así: const { Product, User } = require('./db.js');

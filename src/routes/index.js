@@ -7,6 +7,7 @@ const router = Router();
 
 const usersRouters = require('../controllers/userRouters')
 const authRoutes = require('../controllers/Authentication/index')
+const clientsRouters = require('../controllers/clientsRouters')
 
 // Configurar los routers
 // Ejemplo: router.use('/auth', authRouter);
@@ -17,6 +18,7 @@ router.get('/', (req, res) => {
 
 router.use('/users', usersRouters)
 router.use('/auth', authRoutes)
+router.use('/clients', clientsRouters)
 
 
 module.exports = router;

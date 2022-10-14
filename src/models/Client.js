@@ -20,7 +20,7 @@ module.exports = (sequelize) => {
         description: {
             type: DataTypes.STRING(100)
         },
-        phone_number: {
+        phone: {
             type: DataTypes.STRING
         }
     })
