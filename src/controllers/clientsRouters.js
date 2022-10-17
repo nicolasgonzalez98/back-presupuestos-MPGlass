@@ -32,7 +32,7 @@ router.post('/add_client', async (req, res) => {
 
     try {
         
-        let article = await Client.create({
+        let client = await Client.create({
             name, 
             surname, 
             dni, 
@@ -41,7 +41,7 @@ router.post('/add_client', async (req, res) => {
             phone
         })
 
-        return res.status(200).send(article)
+        return res.status(200).send(client)
     } catch (error) {
         return {err: error}
     }
@@ -64,4 +64,6 @@ router.delete('/delete/:id', async (req, res) => {
 router.put('/update/:id', async (req, res) => {
     
 })
+
+
 module.exports = router
