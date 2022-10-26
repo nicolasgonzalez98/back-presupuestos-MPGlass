@@ -18,8 +18,12 @@ router.get('/', (req, res) => {
     res.json({msg:'GLASSDOOR'})
 })
 
+router.get('/is_online', (req, res) => 
+    res.send(req.isAuthenticated())
+)
+
 router.use('/users', usersRouters)
-router.use('/auth', authRoutes)
+router.use('/authentication', authRoutes)
 router.use('/clients', clientsRouters)
 router.use('/articles', articleRouters)
 router.use('/budgets', budgetRouters)
