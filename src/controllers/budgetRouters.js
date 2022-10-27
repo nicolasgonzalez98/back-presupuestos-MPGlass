@@ -24,10 +24,14 @@ router.get('/', async (req, res) => {
 })
 
 router.post('/add_budget', async (req, res) => {
-    let {} = req.body
+    let { iva, userId, clientId } = req.body
 
     try {
-        let budget = await Budget.create({})
+        let budget = await Budget.create({
+            iva,
+            userId,
+            clientId
+        })
 
         return res.status(200).send(budget)
     } catch (error) {

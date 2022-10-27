@@ -1,3 +1,4 @@
+
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
@@ -5,6 +6,9 @@ module.exports = (sequelize) => {
         is_approved: {
             type: DataTypes.BOOLEAN,
             defaultValue: false
+        },
+        iva: {
+            type: DataTypes.FLOAT
         }
     })
 }
