@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const { Budget } = require('../db')
+const { Budget, Article } = require('../db')
 
 
 const router = Router()
@@ -14,17 +14,19 @@ router.get('/', async (req, res) => {
             
             data = await Budget.findByPk(id)
         }else{
-            data = await Budget.findAll()
+            data = await Budget.findAll({
+                include: 'list_budget'
+            })
         }
 
         return res.json(data)
     } catch (error) {
-        return res.json({err: 'Error al cargar presupuestos'})
+        return res.json({err: error})
     }
 })
 
 router.post('/add_budget', async (req, res) => {
-    let { iva, userId, clientId } = req.body
+    let { iva, userId, clientId, articles } = req.body
 
     try {
         let budget = await Budget.create({
@@ -33,9 +35,15 @@ router.post('/add_budget', async (req, res) => {
             clientId
         })
 
+        
+
+        articles.map(e => {
+            
+        })
+
         return res.status(200).send(budget)
     } catch (error) {
-        
+        res.send(error)
     }
 })
 
