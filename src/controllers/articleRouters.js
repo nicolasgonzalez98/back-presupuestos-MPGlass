@@ -24,6 +24,20 @@ router.get('/', async (req, res) => {
     }
 })
 
+router.get('/:id', async(req, res) => {
+    const { id } = req.params
+
+    try {
+        let data = await Article.findAll({
+            where: {userId: id}
+        })
+
+        return res.send(data)
+    } catch (error) {
+        return res.json({err: 'Error al cargar articulos'})
+    }
+})
+
 router.post('/add_article', async (req, res) => {
     try {
         let {name, quantity, weight, width ,height, price} = req.body

@@ -1,5 +1,6 @@
 const { Router } = require('express');
-const { Budget, Article } = require('../db')
+
+const { Budget, Article, BudgetArticle } = require('../db')
 
 
 const router = Router()
@@ -25,6 +26,20 @@ router.get('/', async (req, res) => {
     }
 })
 
+router.get('/:id', async(req, res) => {
+    const { id } = req.params
+
+    try {
+        let data = await Budget.findAll({
+            where: {userId: id}
+        })
+
+        return res.send(data)
+    } catch (error) {
+        return res.json({err: 'Error al cargar presupuestos'})
+    }
+})
+
 router.post('/add_budget', async (req, res) => {
     let { iva, userId, clientId, articles } = req.body
 
@@ -37,9 +52,36 @@ router.post('/add_budget', async (req, res) => {
 
         
 
-        articles.map(e => {
-            
+        const pending_promises_array = articles.map(e => Article.findOrCreate({
+            where: {name: e.name, },
+            defaults: {
+                userId: userId
+            }
+        }))
+
+        await Promise.all(pending_promises_array)
+
+        let nombres = articles.map(e => e.name)
+        let articlesDb = await Article.findAll({
+            where:{name:nombres}
         })
+
+        console.log(budget.id)
+
+        await budget.addList_budget(articlesDb)
+
+        let articlesBudgetDb = await BudgetArticle.findAll({
+            where: {budget_id: budget.id}
+        })
+
+        for(let i = 0; i<articlesBudgetDb.length; i++){
+            articlesBudgetDb[i].quantity = articles[i].quantity
+            articlesBudgetDb[i].weight = articles[i].weight
+            articlesBudgetDb[i].width = articles[i].width   
+            articlesBudgetDb[i].height = articles[i].height 
+            articlesBudgetDb[i].price = articles[i].price
+            await articlesBudgetDb[i].save()
+        }
 
         return res.status(200).send(budget)
     } catch (error) {
