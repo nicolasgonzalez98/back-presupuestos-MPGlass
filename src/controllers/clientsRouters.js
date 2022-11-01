@@ -40,7 +40,7 @@ router.get('/:id', async(req, res) => {
 })
 
 router.post('/add_client', async (req, res) => {
-    let {name, surname, dni, address ,description, phone} = req.body
+    let {name, surname, dni, address ,description, phone, userId} = req.body
 
     if(!name || !surname)return res.status(400).json({error:"Falta enviar datos obligatorios"})
 
@@ -52,7 +52,8 @@ router.post('/add_client', async (req, res) => {
             dni, 
             address, 
             description, 
-            phone
+            phone,
+            userId
         })
 
         return res.status(200).send(client)
