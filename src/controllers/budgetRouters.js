@@ -40,6 +40,20 @@ router.get('/:id', async(req, res) => {
     }
 })
 
+router.get('/client/:id', async(req, res) => {
+    const { id } = req.params
+
+    try {
+        let data = await Budget.findAll({
+            where: {clientId: id}
+        })
+
+        return res.send(data)
+    } catch (error) {
+        return res.json({err: 'Error al cargar presupuestos'})
+    }
+})
+
 router.post('/add_budget', async (req, res) => {
     let { iva, userId, clientId, articles } = req.body
 
