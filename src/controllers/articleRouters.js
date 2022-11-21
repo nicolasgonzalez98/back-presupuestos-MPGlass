@@ -40,21 +40,33 @@ router.get('/:id', async(req, res) => {
 
 router.post('/add_article', async (req, res) => {
     try {
-        let {name, quantity, weight, width ,height, price} = req.body
+        let {name, weight_price, area_price, unity_price ,type, unity, userId} = req.body
+
+        console.log(req.body)
         if(!name)return res.status(404).send('Faltan enviar datos obligatorios')
+        if(!weight_price)weight_price = 0
+        if(!area_price)area_price = 0
+        if(!unity_price)unity_price = 0
+        if(weight_price)weight_price = parseInt(weight_price)
+        if(area_price)area_price = parseInt(area_price)
+        if(unity_price)unity_price = parseInt(unity_price)
         
         let article = await Article.create({
             name, 
-            quantity, 
-            weight, 
-            width, 
-            height, 
-            price
+            weight_price, 
+            area_price, 
+            unity_price,
+            type, 
+            unity,
+            userId
         })
+
+        
 
         return res.status(200).send(article)
 
     } catch (error) {
+        console.log(error)
         return res.json({err: error})
     }
 })
@@ -72,4 +84,25 @@ router.delete('/delete_article/:id', async(req, res) => {
         return {err: error}
     }
 })
+
+router.put('/edit_article/:id', async(req, res) => {
+    const { id } = req.params
+    let { weight_price, area_price, unity_price, type, unity } = req.body
+    let condition = {}
+    try {
+        let article = await Article.findByPk(id)
+        if(weight_price)condition.weight_price = weight_price
+        if(area_price)condition.area_price = area_price
+        if(unity_price)condition.unity_price = unity_price
+        if(type)condition.type = type
+        if(unity)condition.unity = unity
+
+        await article.update(condition)
+        return res.send(article)
+
+    } catch (error) {
+        return res.send(error)
+    }
+})
+
 module.exports = router
