@@ -42,7 +42,6 @@ router.post('/add_article', async (req, res) => {
     try {
         let {name, weight_price, area_price, unity_price ,type, unity, userId} = req.body
 
-        console.log(req.body)
         if(!name)return res.status(404).send('Faltan enviar datos obligatorios')
         if(!weight_price)weight_price = 0
         if(!area_price)area_price = 0
@@ -69,6 +68,47 @@ router.post('/add_article', async (req, res) => {
         console.log(error)
         return res.json({err: error})
     }
+})
+
+router.post('/add_many_articles', async(req, res) => {
+    let articulos = req.body
+    let promise_pending_array= []
+    
+
+    try {
+        articulos.map(e => {
+
+            
+            if(!e.name)return res.status(404).send('Faltan enviar datos obligatorios')
+            if(!e.weight_price)e.weight_price = 0
+            if(!e.area_price)e.area_price = 0
+            if(!e.unity_price)e.unity_price = 0
+            if(e.weight_price)e.weight_price = parseInt(e.weight_price)
+            if(e.unity_price)e.unity_price = parseInt(e.unity_price)
+            
+            if(e.area_price)e.area_price = parseInt(e.area_price)
+            
+
+            let articulo = Article.create({
+                name: e.name, 
+                weight_price: e.weight_price, 
+                area_price: e.area_price, 
+                unity_price: e.unity_price,
+                type: e.type, 
+                unity: e.unity,
+                userId: e.userId
+            })
+
+            promise_pending_array.push(articulo)
+        })
+
+        await Promise.all(promise_pending_array)
+
+        return res.send(articulos)
+    } catch (error) {
+        return res.send(error)
+    }
+    
 })
 
 router.delete('/delete_article/:id', async(req, res) => {

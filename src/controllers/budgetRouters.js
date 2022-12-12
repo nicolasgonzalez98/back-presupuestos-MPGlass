@@ -1,6 +1,6 @@
 const { Router } = require('express');
 
-const { Budget, Article, BudgetArticle } = require('../db')
+const { Budget, Article, Client, BudgetArticle } = require('../db')
 
 
 const router = Router()
@@ -31,7 +31,8 @@ router.get('/:id', async(req, res) => {
 
     try {
         let data = await Budget.findAll({
-            where: {userId: id}
+            where: {userId: id},
+            include: ['list_budget', Client]
         })
 
         return res.send(data)
@@ -56,7 +57,7 @@ router.get('/client/:id', async(req, res) => {
 
 router.post('/add_budget', async (req, res) => {
     let { iva, userId, clientId, articles } = req.body
-
+    
     try {
         let budget = await Budget.create({
             iva,
@@ -64,7 +65,6 @@ router.post('/add_budget', async (req, res) => {
             clientId
         })
 
-        
 
         const pending_promises_array = articles.map(e => Article.findOrCreate({
             where: {name: e.name, },
@@ -75,18 +75,23 @@ router.post('/add_budget', async (req, res) => {
 
         await Promise.all(pending_promises_array)
 
+        
+
         let nombres = articles.map(e => e.name)
+        
         let articlesDb = await Article.findAll({
             where:{name:nombres}
         })
 
-        console.log(budget.id)
+        
 
         await budget.addList_budget(articlesDb)
+
 
         let articlesBudgetDb = await BudgetArticle.findAll({
             where: {budget_id: budget.id}
         })
+
 
         for(let i = 0; i<articlesBudgetDb.length; i++){
             articlesBudgetDb[i].quantity = articles[i].quantity
@@ -103,7 +108,7 @@ router.post('/add_budget', async (req, res) => {
     }
 })
 
-router.post('/delete_budget/:id', async(req, res) => {
+router.delete('/delete_budget/:id', async(req, res) => {
     let { id } = req.params
 
     try {
@@ -117,6 +122,38 @@ router.post('/delete_budget/:id', async(req, res) => {
 
         res.send(`El presupuesto ${id} ha sido eliminada`)
 
+    } catch (error) {
+        return res.json({err: error})
+    }
+})
+
+router.put('/approve_budget/:id', async(req, res) => {
+    let { id } = req.params
+
+    try {
+        const budget = await Budget.findByPk(id)
+
+        budget.is_approved = true
+
+        budget.save()
+
+        return res.send(budget)
+    } catch (error) {
+        return res.json({err: error})
+    }
+})
+
+router.put('/unapprove_budget/:id', async(req, res) => {
+    let { id } = req.params
+
+    try {
+        const budget = await Budget.findByPk(id)
+
+        budget.is_approved = false
+
+        budget.save()
+
+        return res.send(budget)
     } catch (error) {
         return res.json({err: error})
     }
