@@ -27,7 +27,8 @@
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
     "pg": "^8.5.1",
-    "sequelize": "^6.3.5"
+    "sequelize": "^6.3.5",
+    "styled-components": "^5.3.6"
   },
   "devDependencies": {
     "supertest-session": "^4.1.0",
