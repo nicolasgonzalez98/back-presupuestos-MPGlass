@@ -21,7 +21,7 @@ server.name = 'API';
 
 const urlFlamaFront = process.env.BASE_URL || 'http://localhost:3000';
 
-
+server.set('trust proxy', 1);
 server.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 server.use(express.urlencoded({ extended: true, limit: "50mb" }));
 server.use(bodyParser.json({ limit: '50mb' }));
