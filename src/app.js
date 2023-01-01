@@ -30,11 +30,23 @@ server.use(morgan('dev'));
 
 server.use(
   session({
+    cookie:{
+      secure: true,
+      maxAge:60000
+         },
+    //store: new RedisStore(),
     secret: SECRET || 'secret',
-    resave: true,
+    resave: false,
     saveUninitialized: true,
   })
 ); 
+
+server.use(function(req,res,next){
+  if(!req.session){
+      return next(new Error('Oh no')) //handle error
+  }
+  next() //otherwise continue
+  });
 
 //For Passport
 
