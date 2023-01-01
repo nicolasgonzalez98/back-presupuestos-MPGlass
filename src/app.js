@@ -7,7 +7,8 @@ const session = require("express-session");
 const passport = require('passport');
 const bcrypt = require("bcrypt")
 //const session = require('cookie-session');
-
+//var RedisStore = require('connect-redis')(express);
+const MemoryStore = require('memorystore')(session)
 
 
 
@@ -30,23 +31,17 @@ server.use(morgan('dev'));
 
 server.use(
   session({
-    cookie:{
-      secure: true,
-      maxAge:60000
-         },
-    //store: new RedisStore(),
+    cookie: { maxAge: 86400000 },
+    store: new MemoryStore({
+          checkPeriod: 86400000 // prune expired entries every 24h
+    }),
     secret: SECRET || 'secret',
     resave: false,
     saveUninitialized: true,
   })
 ); 
 
-server.use(function(req,res,next){
-  if(!req.session){
-      return next(new Error('Oh no')) //handle error
-  }
-  next() //otherwise continue
-  });
+
 
 //For Passport
 
