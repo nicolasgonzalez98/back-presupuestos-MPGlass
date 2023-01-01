@@ -20,7 +20,6 @@ router.post('/login',
 
 
 router.get('/login', (req, res)=> {
-    console.log('Hubo un error.')
     return res.send('Email o contraseña invalida');
 })
 
