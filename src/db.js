@@ -11,7 +11,7 @@ const sequelize = new Sequelize(`postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}
   dialect: 'postgres',
   protocol: 'postgres',
   dialectOptions: {
-    ssl: true,
+    ssl: process.env.DB_PORT?true:false,
     native:true
   }
 });

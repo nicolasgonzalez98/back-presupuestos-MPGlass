@@ -46,7 +46,8 @@ router.get('/client/:id', async(req, res) => {
 
     try {
         let data = await Budget.findAll({
-            where: {clientId: id}
+            where: {clientId: id},
+            include: ['list_budget', Client]
         })
 
         return res.send(data)
